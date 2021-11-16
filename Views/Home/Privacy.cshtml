@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+@model Employee
+
+<form id='myForm'>
+
+    <div class="form-group">
+        <label for="user"> Full Name: </label>
+        <input type="text" name="fullName" id="fullName" class="form-control" />
+        <h5 id="fullNameCheck" style="color: red">
+            **Please enter your full name
+        </h5>
+    </div>
+
+    <div class="form-group">
+        <label for="user"> Date of birth: </label>
+        <input type="date" name="dob" id="dob" class="form-control" />
+        <h5 id="dobCheck" style="color: red">
+            **Please enter your date of birth
+        </h5>
+    </div>
+
+    <div class="form-group col-6">
+        <button class="btn btn-primary" id="SubmitForm">Add Employee</button>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        let fullNameError = true;
+        let dobError = true;
+
+        $("#fullNameCheck").hide();
+        $("#dobCheck").hide();
+
+        $("#fullName").keyup(function () {
+            validateFullName();
+        });
+
+        function validateFullName() {
+            let fullNameValue = $("#fullName").val();
+
+            console.log(fullNameValue, fullNameValue.length);
+
+            if (fullNameValue.length == "") {
+                $("#fullNameCheck").show();
+                fullNameError = true;
+            } else if (fullNameValue.length < 8) {
+                $("#fullNameCheck").show();
+                $("#fullNameCheck").html("full name should be great than 8 characters");
+                fullNameError = true;
+            } else {
+                $("#fullNameCheck").hide();
+                fullNameError = false;
+            }
+        }
+
+        $("#dob").change(function () {
+            validateDOB();
+        });
+
+        function validateDOB() {
+            let dobValue = $("#dob").val();
+
+            var data = dobValue.split("-");
+
+            dobError =
+                !(data[0] > 0 && data[1] > 0 && data[1] < 13 && data[2] > 0 && data[2] < 32);
+
+            if (dobError) {
+                $("#dobCheck").show();
+            } else {
+                $("#dobCheck").hide();
+            }
+
+            console.log(dobValue, dobError);
+        }
+
+        $("#SubmitForm").click(function () {
+            console.log("potato", dobError, fullNameError);
+            validateFullName();
+            validateDOB();
+
+            if (!(dobError && fullNameError)) {
+                class employee {
+                    constructor(name, dob) {
+                        this.EmployeeName = name;
+                        this.EmployeeDOB = dob;
+                    }
+                }
+                let empObj = new employee($("#fullName").val(), $("#dob").val())
+
+                $.ajax("https://localhost:5001/Home/Privacy", { method: "POST", data: empObj })
+            }
+        });
+    });
+
+
+</script>
