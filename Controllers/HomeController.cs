@@ -7,6 +7,7 @@ using AjaxCallMVC.Models;
 using AjaxCallMVC.Data;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 
 namespace AjaxCallMVC.Controllers
 {
@@ -16,11 +17,7 @@ namespace AjaxCallMVC.Controllers
 
         private readonly ApplicationDbContext _dbContext;
 
-        List<Employee> EmployeeList = new List<Employee> {
-                                new Employee() { EmployeeId = 1, EmployeeName = "potato" },
-                                new Employee { EmployeeId = 2, EmployeeName = "cabbage" },
-                                new Employee { EmployeeId = 3, EmployeeName = "beetroot" }
-                            };
+        List<Employee> EmployeeList = new List<Employee>();
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext dbContext)
         {
@@ -30,16 +27,17 @@ namespace AjaxCallMVC.Controllers
 
         public IActionResult Index()
         {
+            this.EmployeeList = this._dbContext.Employee.ToList();
             return View(this.EmployeeList);
         }
 
-        public IActionResult Privacy()
+        public IActionResult AddEmployee()
         {
             return View();
         }
 
-        [HttpPost]
-        public void Privacy(Employee model)
+        [NonAction]
+        public void AddEmployee(Employee model)
         {
             try
             {
@@ -57,6 +55,17 @@ namespace AjaxCallMVC.Controllers
         {
             try
             {
+                if (File == null)
+                {
+                    return BadRequest();
+                }
+
+                // To check whether the file is pdf and the size is less than 500kb 
+                if (File.ContentType != "application/pdf" || !(File.Length < 500000) || !(EmployeeName.Length > 0))
+                {
+                    return BadRequest();
+                }
+
                 //the path to save the incoming file
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
 
@@ -78,6 +87,8 @@ namespace AjaxCallMVC.Controllers
                 //writing the file to final directory
                 File.CopyTo(stream);
 
+                stream.Close();
+
                 //The path of the incoming file is added with the employee entity
                 var model = new Employee()
                 {
@@ -86,7 +97,7 @@ namespace AjaxCallMVC.Controllers
                     ResumePath = pathToSave
                 };
 
-                this.Privacy(model);
+                this.AddEmployee(model);
 
                 return Ok();
 
