@@ -57,14 +57,25 @@ namespace AjaxCallMVC.Controllers
         {
             try
             {
+                //the path to save the incoming file
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
 
+                //Checking whether the folder exist or else create a folder using the pathToSave variable
+                if (!Directory.Exists(pathToSave))
+                {
+                    Directory.CreateDirectory(pathToSave);
+                }
+
+                //getting the file name from incoming file
                 var fileName = File.FileName;
 
+                //the final path where the file would save
                 var fullPath = Path.Combine(pathToSave, fileName);
 
+                // creates a stream for a file to read and write 
                 var stream = new FileStream(fullPath, FileMode.Create);
 
+                //writing the file to final directory
                 File.CopyTo(stream);
 
                 var model = new Employee()
@@ -75,7 +86,6 @@ namespace AjaxCallMVC.Controllers
 
                 this.Privacy(model);
 
-                // return Ok();
                 return Ok();
 
             }
