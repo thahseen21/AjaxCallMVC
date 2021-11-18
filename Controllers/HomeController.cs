@@ -78,10 +78,12 @@ namespace AjaxCallMVC.Controllers
                 //writing the file to final directory
                 File.CopyTo(stream);
 
+                //The path of the incoming file is added with the employee entity
                 var model = new Employee()
                 {
                     EmployeeName = EmployeeName,
-                    EmployeeDOB = EmployeeDOB
+                    EmployeeDOB = EmployeeDOB,
+                    ResumePath = pathToSave
                 };
 
                 this.Privacy(model);

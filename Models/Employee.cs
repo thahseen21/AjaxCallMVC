@@ -10,5 +10,7 @@ namespace AjaxCallMVC.Models
 
         public DateTime EmployeeDOB { get; set; }
 
+        public string ResumePath { get; set; }
+
     }
 }
