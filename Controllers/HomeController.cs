@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using AjaxCallMVC.Models;
 using AjaxCallMVC.Data;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace AjaxCallMVC.Controllers
 {
@@ -39,7 +39,7 @@ namespace AjaxCallMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Privacy(Employee model)
+        public void Privacy(Employee model)
         {
             this.EmployeeList.Add(model);
 
@@ -54,9 +54,41 @@ namespace AjaxCallMVC.Controllers
             {
                 // TODO
             }
+        }
 
+        [HttpPost]
+        public IActionResult Upload(string EmployeeName, DateTime EmployeeDOB, IFormFile File)
+        {
+            try
+            {
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
 
-            return Redirect("/");
+                var fileName = File.FileName;
+
+                var fullPath = Path.Combine(pathToSave, fileName);
+
+                var stream = new FileStream(fullPath, FileMode.Create);
+
+                File.CopyTo(stream);
+
+                var model = new Employee()
+                {
+                    EmployeeName = EmployeeName,
+                    EmployeeDOB = EmployeeDOB
+                };
+
+                this.Privacy(model);
+
+                // return Ok();
+                return Ok();
+
+            }
+            catch (System.Exception ex)
+            {
+                // TODO
+                return BadRequest();
+            }
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
