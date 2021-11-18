@@ -99,22 +99,7 @@
         }
 
         $("#file").change(function (event) {
-            var formData = new FormData();
-            var file = event.target.files[0];
-
-            if (file) {
-                if (file.type.split("/")[1] !== "pdf" || !(file.size < 500000)) {
-                    $("#fileCheck").html(
-                        "Upload your resume less than 500kb and pdf format"
-                    );
-                    $("#fileCheck").show();
-                    document.getElementById("file").value = "";
-                } else {
-                    resumeFileError = false;
-                }
-            } else {
-                $("#fileCheck").html("Upload your resume less than 500kb and pdf format");
-            }
+           validateFile();
         });
 
         function validateFile() {

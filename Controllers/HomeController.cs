@@ -41,13 +41,9 @@ namespace AjaxCallMVC.Controllers
         [HttpPost]
         public void Privacy(Employee model)
         {
-            this.EmployeeList.Add(model);
-
-
             try
             {
-                Employee entity = new Employee() { EmployeeName = model.EmployeeName };
-                this._dbContext.Employee.Add(entity);
+                this._dbContext.Employee.Add(model);
                 this._dbContext.SaveChanges();
             }
             catch (System.Exception ex)
